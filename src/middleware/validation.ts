@@ -24,7 +24,7 @@ export const validateMyUserRequest = [
   handleValidationErrors,
 ];
 
-/*export const validateMyRestaurantRequest = [
+export const validateMyRestaurantRequest = [
   body("restaurantName").notEmpty().withMessage("Restaurant name is required"),
   body("city").notEmpty().withMessage("City is required"),
   body("country").notEmpty().withMessage("Country is required"),
@@ -46,4 +46,4 @@ export const validateMyUserRequest = [
     .isFloat({ min: 0 })
     .withMessage("Menu item price is required and must be a postive number"),
   handleValidationErrors,
-];*/
+];
