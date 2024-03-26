@@ -39,13 +39,13 @@ router.post("/",upload.single("imageFile"),validateMyRestaurantRequest,
 );
 
 
-/*router.put(
+router.put(
   "/",
   upload.single("imageFile"),
-  //validateMyRestaurantRequest,
+  validateMyRestaurantRequest,
   jwtCheck,
   jwtParse,
- // MyRestaurantController.updateMyRestaurant
-);*/
+  MyRestaurantController.updateMyRestaurant
+);
 
 export default router;
