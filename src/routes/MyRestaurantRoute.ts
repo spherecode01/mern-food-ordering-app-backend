@@ -1,10 +1,9 @@
 import express from "express";
 import multer from "multer";
-//import MyRestaurantController from "../controllers/MyRestaurantController";
 import { jwtCheck, jwtParse } from "../middleware/auth";
 import MyRestaurantController from "../controllers/MyRestaurantController";
 import { validateMyRestaurantRequest } from "../middleware/validation";
-//import { validateMyRestaurantRequest } from "../middleware/validation";
+
 
 const router = express.Router();
 
@@ -16,19 +15,19 @@ const upload = multer({
   },
 });
 
-/*router.get(
+router.get(
   "/order",
   jwtCheck,
   jwtParse,
   MyRestaurantController.getMyRestaurantOrders
-);*/
+);
 
-/*router.patch(
+router.patch(
   "/order/:orderId/status",
   jwtCheck,
   jwtParse,
- // MyRestaurantController.updateOrderStatus
-);*/
+  MyRestaurantController.updateOrderStatus
+);
 
 router.get("/", jwtCheck, jwtParse,MyRestaurantController.getMyRestaurant);
 
