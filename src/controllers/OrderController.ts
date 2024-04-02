@@ -36,9 +36,6 @@ type CheckoutSessionRequest = {
 };
 
 const stripeWebhookHandler = async (req: Request, res: Response) => {
-  console.log("RECEIVED EVENT");
-  console.log("================");
-  console.log("event:", req.body)
   let event;
 
   try {
@@ -90,17 +87,22 @@ const createCheckoutSession = async (req: Request, res: Response) => {
       createdAt: new Date(),
     });
 
-
     const lineItems = createLineItems(
       checkoutSessionRequest,
       restaurant.menuItems
     );
 
+      // Construct success and cancel URLs using the FRONTEND_URL, order ID, and restaurant ID
+      const successUrl = `${FRONTEND_URL}/order-status?success=true&orderId=${newOrder._id.toString()}&restaurantId=${restaurant._id.toString()}`;
+      const cancelUrl = `${FRONTEND_URL}/detail/${restaurant._id.toString()}?cancelled=true`;
+
     const session = await createSession(
       lineItems,
       newOrder._id.toString(),
       restaurant.deliveryPrice,
-      restaurant._id.toString()
+      restaurant._id.toString(),
+      successUrl, // Pass the success URL to the createSession function
+      cancelUrl // Pass the cancel URL to the createSession function
     );
 
     if (!session.url) {
@@ -123,7 +125,6 @@ const createLineItems = (
     const menuItem = menuItems.find(
       (item) => item._id.toString() === cartItem.menuItemId.toString()
     );
-    
 
     if (!menuItem) {
       throw new Error(`Menu item not found: ${cartItem.menuItemId}`);
@@ -150,7 +151,9 @@ const createSession = async (
   lineItems: Stripe.Checkout.SessionCreateParams.LineItem[],
   orderId: string,
   deliveryPrice: number,
-  restaurantId: string
+  restaurantId: string,
+  successUrl: string, // Add success URL parameter
+ cancelUrl: string // Add cancel URL parameter
 ) => {
   const sessionData = await STRIPE.checkout.sessions.create({
     line_items: lineItems,
@@ -171,8 +174,8 @@ const createSession = async (
       orderId,
       restaurantId,
     },
-    success_url: `${FRONTEND_URL}/order-status?success=true`,
-    cancel_url: `${FRONTEND_URL}/detail/${restaurantId}?cancelled=true`,
+    success_url: successUrl, // Use the success URL parameter
+    cancel_url: cancelUrl, // Use the cancel URL parameter
   });
 
   return sessionData;
